@@ -12,7 +12,7 @@ class Play {
 public:
 	Play(string s);
 	void print(ostream& os);
-	friend Play& operator<<(Play& rh, const pline& p);
+	Play& operator<<(const pline& p);
 
 	string getName();
 private:

@@ -12,9 +12,9 @@ void Play::print(ostream& os) {
 	}
 }
 
-Play& operator<<(Play& rh, const pline& pl) {
-	lock_guard<mutex> guard(rh._m);
-	rh._line.insert(pl.begin(), pl.end());
-	return rh;
+Play& Play::operator<<(const pline& pl) {
+	lock_guard<mutex> guard(_m);
+	_line.insert(pl.begin(), pl.end());
+	return *this;
 }
 
