@@ -15,11 +15,14 @@ void fetcher(play& p, const string& character, ifstream& in) {
 		if (currentLine.size() >= 3) {
 			istringstream iss(currentLine);
 			int index = 0;
-			string whiteSpace;
 			iss >> index;
-			whiteSpace = iss.get();
-			string restLine;
-			getline(iss, restLine);
+			string whiteSpace;
+			do {
+				whiteSpace = iss.get();
+			} while (whiteSpace == " ");
+			string rest;
+			getline(iss, rest);
+			string restLine = whiteSpace.append(rest);
 
 			//now we have got index, character's name and line
 			line current(index, part(character, restLine));
