@@ -9,14 +9,17 @@ using namespace std;
 
 mutex play::lock;
 
+// function called by threads to read in each character's lines
 void fetcher(play& p, const string& character, ifstream& in) {
 	string currentLine;
 	while (getline(in, currentLine)) {
+		// determien whether we should escape this line
 		if (currentLine.size() >= 3) {
 			istringstream iss(currentLine);
 			int index = 0;
 			iss >> index;
 			string whiteSpace;
+			// dealing with multiple whitespaces
 			do {
 				whiteSpace = iss.get();
 			} while (whiteSpace == " ");
@@ -36,11 +39,13 @@ int main(int argc, char* argv[]) {
 	queue<part> information;
 	int characterCount = 0;
 
+	// make sure the input command is correct
 	if (argc > 1) {
 		string configPath = argv[1];
 		ifstream config(configPath);
 		string currentLine;
 		bool findingName = true;
+		// while loop to store the important information
 		while (getline(config, currentLine)) {
 			if (currentLine.size() > 0) {
 				if(findingName){
@@ -58,8 +63,10 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
+		// initial the whole play using name
 		play show(playName);
 
+		// using a map to manage the thread
 		map<int,thread> threadDic;
 		for (int i = 1; i <= characterCount; i++) {
 			ifstream tempIn;
@@ -71,8 +78,7 @@ int main(int argc, char* argv[]) {
 			information.pop();
 		}
 
-
-
+		// print out all the lines
 		show.print(cout);
 	}
 	else {

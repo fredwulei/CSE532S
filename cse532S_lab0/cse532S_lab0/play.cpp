@@ -8,6 +8,7 @@ void play::inner_print(ostream & os)
 	string currentName = it->second.first;
 	os << currentName << "." << endl;
 	while (it != content.end()) {
+		// if the character changes , we should do some thing
 		if (it->second.first != currentName) {
 			currentName = it->second.first;
 			os << endl << (*it).second.first << "." << endl;
@@ -24,6 +25,7 @@ play::play(string s)
 
 context & play::operator<<(const pair<int, pair<string, string>>& l)
 {
+	// the scope locking pattern
 	lock_guard<mutex> guard(play::lock);
 	content[l.first] = l.second;
 	return content;
@@ -31,6 +33,7 @@ context & play::operator<<(const pair<int, pair<string, string>>& l)
 
 void play::print(ostream & os)
 {
+	// the scope locking pattern
 	lock_guard<mutex> guard(play::lock);
 	inner_print(os);
 }
