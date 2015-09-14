@@ -9,9 +9,9 @@ using namespace std;
 
 // some predefined data type
 // ( index, (character name, line) )
-typedef map<int, pair<string, string>> context;;
-typedef pair<int, pair<string, string>> line;
 typedef pair<string, string> part;
+typedef pair<int,part> line;
+typedef map<int, part> context;
 
 class play {
 private:
@@ -23,7 +23,7 @@ private:
 	void inner_print(ostream& os);
 public:
 	play(string s);
-	context& operator << (const pair<int, pair<string, string>>& l);
+	context& operator << (const pair<int, part>& l);
 	void print(ostream& os);
 };
 
