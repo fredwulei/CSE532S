@@ -31,7 +31,7 @@ void config(play& p, ofstream& os) {
 	character cName = p.getKey();
 	while (!cName.empty()) {
 		string fileName = cName.front();
-		os << fileName << " " << fileName.append(".txt") << endl;
+		os << fileName << " " << fileName << ".txt" << endl;
 		cName.pop();
 	}
 }
