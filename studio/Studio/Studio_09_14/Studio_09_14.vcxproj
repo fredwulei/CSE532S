@@ -148,6 +148,10 @@
   <ItemGroup>
     <ClCompile Include="active_object.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="active_object.h" />
+    <ClInclude Include="synchronized_list.h" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

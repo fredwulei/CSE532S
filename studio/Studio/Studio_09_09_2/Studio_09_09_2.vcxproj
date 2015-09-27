@@ -19,9 +19,9 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{67767029-87A5-4527-852D-1520C3ACDCCB}</ProjectGuid>
+    <ProjectGuid>{39224DB4-B1B5-4333-BF90-9FB501EFA2FD}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
-    <RootNamespace>Studio_09_16</RootNamespace>
+    <RootNamespace>Studio_09_09_2</RootNamespace>
     <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
@@ -146,7 +146,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="atomic_types.cpp" />
+    <ClCompile Include="monitor_object.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="synchronized_list.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

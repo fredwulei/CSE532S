@@ -15,7 +15,15 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="atomic_types.cpp">
+    <ClInclude Include="active_object.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="synchronized_list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="active_object.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

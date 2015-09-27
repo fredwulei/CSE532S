@@ -11,11 +11,11 @@ using namespace std;
 template <class T>
 class SyncList {
 public:
-	SyncList():low_mark(0), high_mark(1) {};
-	SyncList(size_t l, size_t h):
+	SyncList() :low_mark(0), high_mark(1) {};
+	SyncList(size_t l, size_t h) :
 		low_mark(l), high_mark(h) {
 		if (low_mark < 0)   low_mark = 0;
-		if (high_mark <= 0) high_mark = 1;	
+		if (high_mark <= 0) high_mark = 1;
 	};
 	SyncList(const SyncList&);
 	void push_back(const T&);
@@ -28,7 +28,6 @@ private:
 	mutable mutex mtx;
 	condition_variable cond;
 	vector<T> vec;
-	void printSize();
 };
 
 template <class T>
@@ -45,21 +44,26 @@ template <class T>
 void SyncList<T>::push_back(const T& value)
 {
 	unique_lock<mutex> lck(mtx);
+
+	cond.wait_for(lck, std::chrono::milliseconds(100), [this] {
+		return vec.size() <= high_mark;
+	});
+
+	/*
 	cond.wait(lck, [this] {
 		return vec.size() <= high_mark;
 	});
+	//*/
 	cout << "Push back " << value << endl;
 	vec.push_back(value);
 	cond.notify_one();
-	printSize();
-	// cond.notify_all();
 }
 
 template <class T>
 void SyncList<T>::pop_back(T& value)
 {
 	unique_lock<mutex> lck(mtx);
-	cond.wait(lck, [this] {
+	cond.wait_for(lck, std::chrono::milliseconds(100), [this] {
 		return vec.size() >= low_mark;
 	});
 	// lck.unlock();
@@ -67,29 +71,25 @@ void SyncList<T>::pop_back(T& value)
 	cout << "Pop back " << value << endl;
 	vec.pop_back();
 	cond.notify_one();
-	printSize();
-	// cond.notify_all();
 }
 
 template <class T>
 void SyncList<T>::push_front(const T& value)
 {
 	unique_lock<mutex> lck(mtx);
-	cond.wait(lck, [this] {
+	cond.wait_for(lck, std::chrono::milliseconds(100), [this] {
 		return vec.size() <= high_mark;
 	});
 	cout << "Push front " << value << endl;
 	vec.insert(vec.begin(), value);
 	cond.notify_one();
-	printSize();
-	// cond.notify_all();
 }
 
 template <class T>
 void SyncList<T>::pop_front(T& value)
 {
 	unique_lock<mutex> lck(mtx);
-	cond.wait(lck, [this] {
+	cond.wait_for(lck, std::chrono::milliseconds(100), [this] {
 		return vec.size() >= low_mark;
 	});
 	// lck.unlock();
@@ -97,16 +97,6 @@ void SyncList<T>::pop_front(T& value)
 	cout << "Pop front " << value << endl;
 	vec.erase(vec.begin());
 	cond.notify_one();
-	printSize();
-	// cond.notify_all();
 }
-
-template <class T>
-void SyncList<T>::printSize()
-{
-	cout << "Current size is " << vec.size() << endl;
-}
-
-
 
 #endif
