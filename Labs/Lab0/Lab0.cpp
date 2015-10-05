@@ -89,7 +89,7 @@ int main(int argc, char* argv[])
 	vector<thread> threads;
 	vector<ifstream> iss;
 
-	//*
+	/*
 	int i = 3;
 	ifstream file(namelist[i][1]);
 	thread t(readPlay, ref(p), ref(namelist[i][0]), ref(file));
@@ -101,10 +101,11 @@ int main(int argc, char* argv[])
 	//*/
 
 
-	/*
+	//*
 	for (int i = 0; i < num_of_characters; i++) {
-		iss.push_back(ifstream(namelist[i][1]));
-		threads.push_back(thread(readPlay, ref(p), ref(namelist[i][0]), ref(iss[i])));
+		ifstream ifs(namelist[i][1]);
+		string name = namelist[i][0];
+		threads.push_back(thread(readPlay, ref(p), ref(name), ref(ifs)));
 	}
 
 	for_each(threads.begin(), threads.end(), mem_fn(&thread::join));

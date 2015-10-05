@@ -1,5 +1,5 @@
-Hamlet Prince of Denmark ACT II Scene II A room in the Castle by William Shakespeare
-Guildenstern.txt Guildenstern.txt
+hamlet_act_ii_scene_2
 King.txt King.txt
+Pol.txt Pol.txt
 Queen.txt Queen.txt
-Rosencrantz.txt Rosencrantz.txt
+Volt.txt Volt.txt

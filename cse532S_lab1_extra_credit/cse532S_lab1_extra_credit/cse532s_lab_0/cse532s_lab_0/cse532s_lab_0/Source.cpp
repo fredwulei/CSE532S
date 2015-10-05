@@ -35,6 +35,7 @@ void fetcher(play& p, const string& character, ifstream& in) {
 	}
 }
 
+
 int main(int argc, char* argv[]) {
 	string playName;
 	queue<part> information;
@@ -67,27 +68,30 @@ int main(int argc, char* argv[]) {
 		// initial the whole play using name
 		play show(playName);
 
-		// using a map to manage the thread
-		map<int,SafeThread> threadDic;
 		for (int i = 1; i <= characterCount; i++) {
 			ifstream tempIn;
-			string prefix = "play/";
-			tempIn.open(prefix.append(information.front().second));
-			string characterName = information.front().first;
-			/*
-			threadDic[i] = thread(fetcher, ref(show), ref(information.front().first), ref(tempIn));
-			threadDic[i].join();
-			//*/
-			threadDic[i] = SafeThread(thread(fetcher, ref(show), ref(information.front().first), ref(tempIn)));
-			information.pop();
+			tempIn.open(information.front().second);
+			if (tempIn.is_open()){
+				string characterName = information.front().first;
+				SafeThread(thread(fetcher, ref(show), ref(information.front().first), ref(tempIn)));
+				information.pop();
+			}
+			else{
+				cout << "please check the config file, can not open " << information.front().second << endl;
+				system("pause");
+				return -1;
+			}
 		}
 
 		// print out all the lines
 		show.print(cout);
+		
 	}
 	else {
 		cout << "usage: " << argv[0] << "<configuration_file_name>" << endl;
 	}
+
+	system("pause");
 
 	return 0;
 }

@@ -18,38 +18,18 @@
     <ClCompile Include="Source.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="play.cpp">
+    <ClCompile Include="Play.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="SafeThread.cpp">
+    <ClCompile Include="Player.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="..\..\..\..\_program\Multi-paradigm lab0\materials\Rosencrantz.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\..\..\_program\Multi-paradigm lab0\materials\Guildenstern.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\..\..\_program\Multi-paradigm lab0\materials\hamlet_act_ii_scene_2.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\..\..\_program\Multi-paradigm lab0\materials\hamlet_ii_2_config.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\..\..\_program\Multi-paradigm lab0\materials\King.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-    <Text Include="..\..\..\..\_program\Multi-paradigm lab0\materials\Queen.txt">
-      <Filter>Resource Files</Filter>
-    </Text>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="play.h">
+    <ClInclude Include="Play.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="SafeThread.h">
+    <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

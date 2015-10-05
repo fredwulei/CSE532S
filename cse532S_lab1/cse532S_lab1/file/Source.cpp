@@ -4,29 +4,22 @@
 #include <queue>
 #include <thread>
 #include "play.h"
-#include "SafeThread.h"
 
 using namespace std;
 
 mutex play::lock;
 
-// function called by threads to read in each character's lines
 void fetcher(play& p, const string& character, ifstream& in) {
 	string currentLine;
 	while (getline(in, currentLine)) {
-		// determien whether we should escape this line
 		if (currentLine.size() >= 3) {
 			istringstream iss(currentLine);
 			int index = 0;
-			iss >> index;
 			string whiteSpace;
-			// dealing with multiple whitespaces
-			do {
-				whiteSpace = iss.get();
-			} while (whiteSpace == " ");
-			string rest;
-			getline(iss, rest);
-			string restLine = whiteSpace.append(rest);
+			iss >> index;
+			whiteSpace = iss.get();
+			string restLine;
+			getline(iss, restLine);
 
 			//now we have got index, character's name and line
 			line current(index, part(character, restLine));
@@ -40,13 +33,11 @@ int main(int argc, char* argv[]) {
 	queue<part> information;
 	int characterCount = 0;
 
-	// make sure the input command is correct
 	if (argc > 1) {
 		string configPath = argv[1];
 		ifstream config(configPath);
 		string currentLine;
 		bool findingName = true;
-		// while loop to store the important information
 		while (getline(config, currentLine)) {
 			if (currentLine.size() > 0) {
 				if(findingName){
@@ -64,25 +55,21 @@ int main(int argc, char* argv[]) {
 			}
 		}
 
-		// initial the whole play using name
 		play show(playName);
 
-		// using a map to manage the thread
-		map<int,SafeThread> threadDic;
+		map<int,thread> threadDic;
 		for (int i = 1; i <= characterCount; i++) {
 			ifstream tempIn;
 			string prefix = "play/";
 			tempIn.open(prefix.append(information.front().second));
 			string characterName = information.front().first;
-			/*
 			threadDic[i] = thread(fetcher, ref(show), ref(information.front().first), ref(tempIn));
 			threadDic[i].join();
-			//*/
-			threadDic[i] = SafeThread(thread(fetcher, ref(show), ref(information.front().first), ref(tempIn)));
 			information.pop();
 		}
 
-		// print out all the lines
+
+
 		show.print(cout);
 	}
 	else {

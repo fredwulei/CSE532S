@@ -1,0 +1,5 @@
+hamlet_act_ii_scene_2
+Guildenstern.txt Guildenstern.txt
+King.txt King.txt
+Queen.txt Queen.txt
+Rosencrantz.txt Rosencrantz.txt
