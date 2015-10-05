@@ -80,10 +80,7 @@ void print(play& p, string& s, ofstream& os, bool random) {
 
 int main(int argc, char *argv[]) {
 
-	bool isScramble = false;
-	char *scramble = "scramble";
-
-	if (argc < 3) {
+	if (argc < 4) {
 		cerr << "Please use correct command [scramble] <filename> <configfile_name> <play_name>" << endl;
 		return FAIL_WRONG_ARGUMENTS;
 	}
@@ -91,30 +88,20 @@ int main(int argc, char *argv[]) {
 	string infile;
 	string configFile;
 	string playName;
+	bool isScramble = false;
 
-	if (_stricmp(scramble, argv[1]) == 0) {
+	if (_stricmp("scramble", argv[1]) == 0) {
 		isScramble = true;
 		infile = argv[2];
 		configFile = argv[3];
 		playName = argv[4];
-		for (int i = 5; i < argc; i++) {
-			playName.append(" ");
-			playName.append(argv[i]);
-		}
 	}
 	else {
 		infile = argv[1];
 		configFile = argv[2];
 		playName = argv[3];
-		for (int i = 4; i < argc; i++) {
-			playName.append(" ");
-			playName.append(argv[i]);
-		}
 	}
 	
-	cout << infile << endl;
-
-
 	play show(playName);
 	ifstream in;
 	ofstream os;
