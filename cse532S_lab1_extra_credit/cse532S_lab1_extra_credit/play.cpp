@@ -10,6 +10,7 @@ play::play(string s) :playName(s) {}
 
 play & play::operator<<(singleLine & s)
 {
+	//because the file is operated seperately, so mutex is not necessary
 	if (context.count(s.first) > 0) {
 		context[s.first].insert(s.second);
 	}

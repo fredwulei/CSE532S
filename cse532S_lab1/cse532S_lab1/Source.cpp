@@ -1,5 +1,6 @@
 #include <queue>
 #include <vector>
+#include <memory>
 #include "Play.h"
 #include "Player.h"
 using namespace std;
@@ -15,7 +16,7 @@ int main(int argc, char* argv[]) {
 
 	if (argc < 2) {
 		//Check for the command line usage
-		cerr << "usage: " << argv[0] << "<configuration_file_name>" << endl;
+		cerr << "[ERROR]:  usage: " << argv[0] << "<configuration_file_name>" << endl;
 		return FAIL_WRONG_ARGUMENTS;
 	}
 
@@ -23,6 +24,11 @@ int main(int argc, char* argv[]) {
 	string currentLine;
 	queue<SingleLine> information;
 	ifstream config(argv[1]);
+
+	if (!config.is_open()) {
+		cerr << "[ERROR]:  Open file fail: " << argv[1] << endl;
+		return FAIL_FILE_OPEN;
+	}
 
 	int characterCount = 0;
 	bool nameFound = false;
@@ -52,7 +58,7 @@ int main(int argc, char* argv[]) {
 	for (int i = 1; i <= characterCount; i++) {
 		ifstream tempInFile(information.front().second);
 		if (!tempInFile.is_open()) {
-			cerr << "Open file fail: " << information.front().second << endl;
+			cerr << "[ERROR]:  Open file fail: " << information.front().second << endl;
 			return FAIL_FILE_OPEN;
 		}
 		//Use new to pass a right value's address to a unique_ptr

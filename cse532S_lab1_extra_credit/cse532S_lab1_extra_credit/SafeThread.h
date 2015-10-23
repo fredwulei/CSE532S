@@ -10,6 +10,7 @@ public:
 	explicit SafeThread(std::thread& t) :_t(t){}
 	~SafeThread()
 	{
+		//RAII, deconstructor to join
 		if (_t.joinable()){
 			_t.join();
 		}

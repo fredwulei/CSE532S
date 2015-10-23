@@ -13,7 +13,9 @@ using namespace std;
 typedef pair<int, string> part;
 typedef map<int, string> line;
 typedef map<string, line> script;
+//major container to store the lines
 typedef pair<string, part> singleLine;
+//container to store the information of characters
 typedef queue<string> character;
 
 class play {
@@ -24,6 +26,7 @@ private:
 public:
 	static int getIndex();
 	play(string s);
+	//insertion overload
 	play& operator << (singleLine& s);
 	const string& getName();
 	const character getKey();

@@ -15,7 +15,7 @@ enum {
 	FAIL_WRONG_ARGUMENTS = 1,
 	FAIL_FILE_OPEN_MAIN_SCRIPT = 2,
 	FAIL_FILE_OPEN_CONFIG = 3,
-	FAIL_FILE_OPEN_OUTPUT =4
+	FAIL_FILE_OPEN_OUTPUT = 4
 };
 
 int play::lineIndex = 0;
@@ -56,6 +56,7 @@ void print(play& p, string& s, ofstream& os, bool random) {
 	line::iterator itEnd = p.getEndIterator(s);
 
 	if (random) {
+		//use seed to generate random number
 		srand(unsigned(time(0)));
 		vector<string> line;
 		while (it != itEnd) {			
@@ -81,6 +82,7 @@ void print(play& p, string& s, ofstream& os, bool random) {
 int main(int argc, char *argv[]) {
 
 	if (argc < 4) {
+		cout << "[ERROR]: missing arguments" << endl;
 		cerr << "Please use correct command [scramble] <filename> <configfile_name> <play_name>" << endl;
 		return FAIL_WRONG_ARGUMENTS;
 	}
@@ -91,12 +93,19 @@ int main(int argc, char *argv[]) {
 	bool isScramble = false;
 
 	if (_stricmp("scramble", argv[1]) == 0) {
+		//if the first argument is scramble, the total number of arguments should be 5 or more
+		if (argc < 5){
+			cerr << "[ERROR]: command 'scramble' must be followed by at least three arguments" << endl;
+			cerr << "Please use correct command [scramble] <filename> <configfile_name> <play_name>" << endl;
+			return FAIL_WRONG_ARGUMENTS;
+		}
 		isScramble = true;
 		infile = argv[2];
 		configFile = argv[3];
 		playName = argv[4];
 	}
-	else {
+	else{
+		//otherwise it's acceptable
 		infile = argv[1];
 		configFile = argv[2];
 		playName = argv[3];
@@ -112,7 +121,7 @@ int main(int argc, char *argv[]) {
 		fetcher(show, in);
 	}
 	else {
-		cerr << "can not open main script : " << infile << endl;
+		cerr << "[ERROR]: can not open main script : " << infile << endl;
 		return FAIL_FILE_OPEN_MAIN_SCRIPT;
 	}
 
@@ -120,7 +129,7 @@ int main(int argc, char *argv[]) {
 		config(show, os);
 	}
 	else {
-		cerr << "can not open output script : " << configFile << endl;
+		cerr << "[ERROR]: can not open output script : " << configFile << endl;
 		return FAIL_FILE_OPEN_CONFIG;
 	}
 
@@ -136,7 +145,7 @@ int main(int argc, char *argv[]) {
 			cName.pop();
 		}
 		else {
-			cerr << "can not open outputfile : " << outputFile << endl;
+			cerr << "[ERROR]: can not open outputfile : " << outputFile << endl;
 			return FAIL_FILE_OPEN_OUTPUT;
 		}
 

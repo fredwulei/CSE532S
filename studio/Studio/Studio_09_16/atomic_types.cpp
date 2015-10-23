@@ -6,21 +6,40 @@
 
 using namespace std;
 
-std::atomic<bool> x, y;
-std::atomic<int> z;
+//std::atomic<bool> x, y;
+//std::atomic<int> z;
+//
+//void write_x_then_y()
+//{
+//	x.store(true, std::memory_order_relaxed);
+//	y.store(true, std::memory_order_relaxed);
+//}
+//
+//void read_y_then_x()
+//{
+//	while (!y.load(std::memory_order_relaxed));
+//	if (x.load(std::memory_order_relaxed))
+//		++z;
+//}
+
+
+
+bool x, y;
+int z;
 
 void write_x_then_y()
 {
-	x.store(true, std::memory_order_relaxed);
-	y.store(true, std::memory_order_relaxed);
+	x = true;
+	y = true;
 }
 
 void read_y_then_x()
 {
-	while (!y.load(std::memory_order_relaxed));
-	if (x.load(std::memory_order_relaxed))
+	while (!y);
+	if (x)
 		++z;
 }
+
 
 
 int main(int argc, char* argv[]) {
@@ -120,7 +139,6 @@ int main(int argc, char* argv[]) {
 	cout << "atomic wchar_t is " << (awchar_t.is_lock_free() ? "lock free" : "not lock free") << endl;
 	//*/
 	
-
 	x = false;
 	y = false;
 	z = 0;

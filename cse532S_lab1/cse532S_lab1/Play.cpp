@@ -12,9 +12,15 @@ void Play::recite(LineIter & iter)
 		}
 		else {
 			//if the counter larger than index, should increment iterator
-			cerr << "Counter larger than structured line's number" << endl;
+			cerr << "[ERROR]:  Counter larger than structured line's number" << endl;
 			iter++;
 			cv.notify_all();
+			if (iter->first == counter){
+				return true;
+			}
+			else{
+				return false;
+			}
 		}
 	});
 	if (firstLine) {
