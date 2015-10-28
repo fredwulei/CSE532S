@@ -1,12 +1,12 @@
 #include "Director.h"
 
-Director::Director(string scriptName, unsigned int playerCount)
+Director::Director(const string& scriptName, unsigned int playerCount)
 {
 	maximum = 0;
 	ifstream infile(scriptName);
 	if (!infile.is_open()) {
 		string error = "[ERROR]:  Open file fail: " + scriptName;
-		throw exception(error.c_str());
+		throw CodeException(FAIL_FILE_OPEN, error.c_str());
 	}
 	string currentLine;
 	bool followingPL;
@@ -35,7 +35,7 @@ Director::Director(string scriptName, unsigned int playerCount)
 				if (!configFile.is_open()) {
 					string temp = sm_config[1];
 					string error = "[ERROR]:  Open file fail: " + temp;
-					throw exception(error.c_str());
+					throw CodeException(FAIL_FILE_OPEN, error.c_str());
 				}
 				string partDefinitionLine;
 				regex re_part("^[\\s]*([\\w]+)[\\s]+(.*.txt)[\\s]*$");
@@ -55,17 +55,30 @@ Director::Director(string scriptName, unsigned int playerCount)
 
 	//finish reading script
 	//#############remeber check whether null or not
-	play = playPtr(new(nothrow) Play(titles, finished.get_future()));
+	try {
+		play = playPtr(new Play(titles, finished.get_future()));
+	}
+	catch (exception& e) {
+		throw (BAD_ALLOCATION,e);
+	}
+	
+
 	maximum = maximum > (int)playerCount ? maximum : (int)playerCount;
 	for (int i = 0; i < maximum; i++) {
-		players.push_back(playerPtr(new(nothrow) Player(*play)));
+		try {
+			players.push_back(playerPtr(new Player(*play)));
+		}
+		catch (exception& e) {
+			throw (BAD_ALLOCATION, e);
+		}
+		
 		players[i]->activate();
 	}
 }
 
 void Director::cue()
 {
-	thread temp = thread([&] {
+	sharedFut = async(launch::async, [&]{
 		scriptsIter iter = scripts.begin();
 		while (iter != scripts.end()) {
 			sIter sIt = iter->second.begin();
@@ -73,7 +86,13 @@ void Director::cue()
 				play->checkAvailable(maximum);
 				for (int i = 0; i < maximum; i++) {
 					if (!players[i]->isbusy()) {
-						players[i]->enter(iter->first,sIt->first,sIt->second);
+						try {
+							players[i]->enter(iter->first, sIt->first, sIt->second);
+						}
+						catch (CodeException& e) {
+							emergencyStop();
+							throw e;
+						}
 						break;
 					} 
 				}
@@ -86,8 +105,23 @@ void Director::cue()
 		for (int i = 0; i < maximum; i++) {
 			players[i]->join();
 		}
-		
-	});
 
-	temp.join();
+		return true;
+		
+	}).share();
 }
+
+void Director::emergencyStop() {
+	for (int i = 0; i < maximum; i++) {
+		players[i]->deactive();
+	}
+	play->emergentStop();
+	for (int i = 0; i < maximum; i++) {
+		players[i]->join();
+	}
+}
+
+result Director::getResult() {
+	return sharedFut;
+}
+

@@ -25,11 +25,11 @@
     <ClCompile Include="Source.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CodeException.h" />
     <ClInclude Include="Director.h" />
     <ClInclude Include="Play.h" />
     <ClInclude Include="Player.h" />
     <ClInclude Include="SafeThread.h" />
-    <ClInclude Include="Utility.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DAD83ED4-D02D-4C14-8D18-A8B63420BDD3}</ProjectGuid>

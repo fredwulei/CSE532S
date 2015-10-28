@@ -35,13 +35,13 @@
     <ClInclude Include="Player.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Utility.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Director.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="SafeThread.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CodeException.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

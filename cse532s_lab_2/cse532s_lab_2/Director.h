@@ -1,10 +1,13 @@
 #ifndef H_DIRECTOR
 #define H_DIRECTOR
 
-#include "Utility.h"
 #include "Play.h"
 #include "Player.h"
 
+//ACT
+typedef promise<bool> endPromise;
+
+//play and player datatype
 typedef shared_ptr<Play> playPtr;
 typedef shared_ptr<Player> playerPtr;
 typedef vector<shared_ptr<Player>> playerContainer;
@@ -15,12 +18,15 @@ typedef map<int, script> scriptsContainer;
 typedef scriptsContainer::iterator scriptsIter;
 typedef script::iterator sIter;
 
+//exception
+typedef shared_future<bool> result;
 
 class Director
 {
 public:
-	Director(string scriptName, unsigned int playerCount = 0);
+	Director(const string& scriptName, unsigned int playerCount = 0);
 	void cue();
+	result getResult();
 private:
 	int maximum;
 
@@ -30,6 +36,10 @@ private:
 	scriptsContainer scripts;
 	playPtr play;
 	playerContainer players;
+
+	void emergencyStop();
+
+	result sharedFut;
 };
 
 #endif

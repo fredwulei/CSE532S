@@ -1,10 +1,12 @@
 #include "Player.h"
 
-mutex mmm;
-
 void Player::read(string name, string script)
 {
 	ifstream infile(script);
+	if (!infile.is_open()) {
+		string error = "[ERROR]:  Open file fail: " + script;
+		throw CodeException(FAIL_FILE_OPEN, error.c_str());
+	}
 	string currentLine;
 	//Using regular expression to check the data for each line
 	regex re("^\\s*(\\d+)\\s*([^\\d\\s].*?)\\s*$");
@@ -20,59 +22,54 @@ void Player::read(string name, string script)
 
 void Player::act()
 {
-	/*while (isActive) {
-		if (!lines.empty() && retrieving == false) {
-			if (iter != lines.end()) {
-				play.recite(iter, sceneCount);
-			}
-			else {
-				exit();
-			}
-		}
-		else {
-			cout << "sleep :  " << sceneCount << index << endl;
-			this_thread::sleep_for(chrono::seconds(2));
-		}
-	}*/
-
 	while (isActive) {
-		if (!lines.empty() && retrieving == false) {
-			if (iter != lines.end()) {
-				play.recite(iter, sceneCount);
-				iter++;
+		if (!retrieving) {
+			// acting
+			if (!lines.empty()) {
+				if (iter != lines.end()) {
+					play.recite(iter, sceneCount);
+					iter++;
+				}
+				else {
+					exit();
+				}
 			}
-			else {
-				exit();
+			// no job anymore
+			if (lines.empty() && play.checkPlayFinished()) {
+				deactive();
 			}
-			
 		}
+		// else is waiting
 	}
 }
 
 void Player::enter(int sceneCounter, string name, string script)
 {
+	//namea = name;
+
+
+
+
 
 	play.enter(sceneCounter);
 	busy = true;
 	retrieving = true;
 	sceneCount = sceneCounter;
-	read(name, script);
+	try {
+		read(name, script);
+	}
+	catch (CodeException& e) {
+		throw e;
+	}
 	iter = lines.begin();
 	retrieving = false;
 }
 
 void Player::exit()
 {
-	auto temp = lines.begin()->second.first;
 	lines.clear();
 	busy = false;
 	play.exit();
-
-	if (play.checkPlayFinished()) {
-		unique_lock<mutex> lock(mmm);
-		lock.unlock();
-		deactive();
-	}
 }
 
 bool Player::isbusy()
@@ -93,12 +90,13 @@ void Player::deactive()
 	if (isActive) {
 		isActive = false;
 	}
-	//t.join();
 }
 
 void Player::join()
 {
 	if (t.joinable()) {
+		//printf("######### %d try join ### active %d  name %s\n", index,isActive,namea.c_str());
 		t.join();
+		//printf("######### %d joined\n", index);
 	}
 }

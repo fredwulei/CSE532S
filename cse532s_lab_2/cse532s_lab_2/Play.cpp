@@ -4,6 +4,10 @@ void Play::recite(LineIter & iter, int sceneCount)
 {
 	unique_lock<mutex> lock(m);
 	cv.wait(lock, [&] {
+		if (emergencyStop) {
+			return true;
+		}
+
 		if (sceneCount == scene_fragment_counter && iter->first == line_counter) {
 			return true;
 		}
@@ -12,7 +16,7 @@ void Play::recite(LineIter & iter, int sceneCount)
 		}
 		else {
 			//to be finished
-			cerr << "[ERROR]:  ##################################################" << endl;
+			cerr << "[ERROR]:  scene already passed or line already passed" << endl;
 			iter++;
 			cv.notify_all();
 			if (iter->first == line_counter){
@@ -23,24 +27,26 @@ void Play::recite(LineIter & iter, int sceneCount)
 			}
 		}
 	});
-	if (firstLine) {
-		currentCharacter = iter->second.first;
-		cout << iter->second.first << "." << endl;
-		firstLine = false;
-	}
-	else {
-		if (currentCharacter != iter->second.first) {
-			cout << endl << iter->second.first << "." << endl;
+	if (!emergencyStop) {
+		if (firstLine) {
 			currentCharacter = iter->second.first;
+			cout << iter->second.first << "." << endl;
+			firstLine = false;
 		}
+		else {
+			if (currentCharacter != iter->second.first) {
+				cout << endl << iter->second.first << "." << endl;
+				currentCharacter = iter->second.first;
+			}
+		}
+
+		cout << iter->second.second << endl;
+
+		line_counter++;
+		//The notify_all can be done after unlock
+		lock.unlock();
+		cv.notify_all();
 	}
-	
-	cout << iter->second.second << endl;
-	
-	line_counter++;
-	//The notify_all can be done after unlock
-	lock.unlock();
-	cv.notify_all();
 }
 
 void Play::enter(int sceneCount)
@@ -52,9 +58,7 @@ void Play::enter(int sceneCount)
 		on_stage++;
 	}
 	else {
-		// the same lock??????????????????????????????????
-		// a new condition variable???????????????????????
-		// for high concurrency. 
+		//different condition variable and different mutex
 		unique_lock<mutex> lock(m_enter);
 		waiting++;
 		cv_enter.wait(lock, [&] {
@@ -101,6 +105,12 @@ void Play::checkAvailable(int max)
 bool Play::checkPlayFinished()
 {
 	return finishFlag._Is_ready();
+}
+
+void Play::emergentStop()
+{
+	emergencyStop = true;
+	cv.notify_all();
 }
 
 void Play::resetCCandFL()
