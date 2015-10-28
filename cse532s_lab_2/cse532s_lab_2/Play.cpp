@@ -55,10 +55,12 @@ void Play::enter(int sceneCount)
 		// the same lock??????????????????????????????????
 		// a new condition variable???????????????????????
 		// for high concurrency. 
-		unique_lock<mutex> lock(m);
+		unique_lock<mutex> lock(m_enter);
+		waiting++;
 		cv_enter.wait(lock, [&] {
 			return (sceneCount == scene_fragment_counter);
 		});
+		waiting--;
 		on_stage++;
 	}
 }
@@ -67,13 +69,17 @@ void Play::exit()
 {
 	if (on_stage > 1) {
 		on_stage--;
+		cv_cue.notify_all();
 	}
 	else if (on_stage < 1) {
 		throw exception("[ERROR]: lower bound of on stage exceed");
 	}
 	else {
 		on_stage--;
+		cv_cue.notify_all();
+		resetCCandFL();
 		scene_fragment_counter++;
+		line_counter = 1;
 		if (iter != sceneRef.end()) {
 			if (!iter->empty()) {
 				cout << *iter << endl;
@@ -82,6 +88,25 @@ void Play::exit()
 		}
 		cv_enter.notify_all();
 	}
+}
+
+void Play::checkAvailable(int max)
+{
+	unique_lock<mutex> lock(m_check);
+	cv_cue.wait(lock, [&] {
+		return (on_stage + waiting) < max;
+	});
+}
+
+bool Play::checkPlayFinished()
+{
+	return finishFlag._Is_ready();
+}
+
+void Play::resetCCandFL()
+{
+	firstLine = true;
+	currentCharacter = string();
 }
 
 

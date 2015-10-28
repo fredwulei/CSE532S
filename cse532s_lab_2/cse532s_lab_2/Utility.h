@@ -9,6 +9,7 @@
 #include <thread>
 #include <regex>
 #include <memory>
+#include <future>
 #include "SafeThread.h"
 
 using namespace std;
@@ -20,6 +21,9 @@ typedef sceneTitles::iterator sceneCountIter;
 typedef pair<string, string> SingleLine;
 typedef map<int, pair<string, string>> Line;
 typedef Line::iterator LineIter; 
+
+typedef promise<bool> endPromise;
+typedef future<bool> endFuture;
 
 //Enumeration for return type of main function
 enum {

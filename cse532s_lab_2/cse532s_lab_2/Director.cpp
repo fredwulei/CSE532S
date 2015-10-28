@@ -2,6 +2,7 @@
 
 Director::Director(string scriptName, unsigned int playerCount)
 {
+	maximum = 0;
 	ifstream infile(scriptName);
 	if (!infile.is_open()) {
 		string error = "[ERROR]:  Open file fail: " + scriptName;
@@ -54,20 +55,39 @@ Director::Director(string scriptName, unsigned int playerCount)
 
 	//finish reading script
 	//#############remeber check whether null or not
-	play = playPtr(new(nothrow) Play(titles));
+	play = playPtr(new(nothrow) Play(titles, finished.get_future()));
 	maximum = maximum > (int)playerCount ? maximum : (int)playerCount;
 	for (int i = 0; i < maximum; i++) {
 		players.push_back(playerPtr(new(nothrow) Player(*play)));
+		players[i]->activate();
 	}
-
 }
 
 void Director::cue()
 {
-	SafeThread t(thread([&] {
+	thread temp = thread([&] {
 		scriptsIter iter = scripts.begin();
 		while (iter != scripts.end()) {
+			sIter sIt = iter->second.begin();
+			while (sIt != iter->second.end()) {
+				play->checkAvailable(maximum);
+				for (int i = 0; i < maximum; i++) {
+					if (!players[i]->isbusy()) {
+						players[i]->enter(iter->first,sIt->first,sIt->second);
+						break;
+					} 
+				}
+				sIt++;
+			}
 			iter++;
 		}
-	}));
+		
+		finished.set_value(true);
+		for (int i = 0; i < maximum; i++) {
+			players[i]->join();
+		}
+		
+	});
+
+	temp.join();
 }

@@ -13,15 +13,18 @@ typedef vector<shared_ptr<Player>> playerContainer;
 typedef map<string, string> script;
 typedef map<int, script> scriptsContainer;
 typedef scriptsContainer::iterator scriptsIter;
+typedef script::iterator sIter;
 
 
 class Director
 {
 public:
-	Director(string scriptName, unsigned int playerCount = 0) :maximum(0) {}
+	Director(string scriptName, unsigned int playerCount = 0);
 	void cue();
 private:
 	int maximum;
+
+	endPromise finished;
 
 	sceneTitles titles;
 	scriptsContainer scripts;

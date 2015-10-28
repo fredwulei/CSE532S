@@ -69,18 +69,9 @@ int main(int argc, char* argv[]) {
 	//}
 	//return SUCCESS;
 
+	Director dic("partial_hamlet_act_ii_script.txt");
+	dic.cue();
 
-	try {
-		Director dic("partial_hamlet_act_ii_script.txt");
-	}
-	catch (exception& e) {
-		cerr << "!!!!!!ERROR!!!!!!" << endl;
-		cerr << e.what() << endl;
-		return 0;
-	}
-	
-
-
-
+	return 0;
 
 }
