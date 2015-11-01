@@ -24,11 +24,12 @@ typedef shared_future<bool> result;
 class Director
 {
 public:
-	Director(const string& scriptName, unsigned int playerCount = 0);
+	Director(const string& scriptName, unsigned int playerCount = 0, bool overRide = false);
 	void cue();
 	result getResult();
 private:
 	int maximum;
+	bool isOverride;
 
 	endPromise finished;
 

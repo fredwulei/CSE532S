@@ -31,10 +31,10 @@ typedef Line::iterator LineIter;
 
 //Enumeration for return type of main function
 enum {
-	SUCCESS = 0,
-	FAIL_WRONG_ARGUMENTS = 1,
-	FAIL_FILE_OPEN = 2,
-	BAD_ALLOCATION = 3
+	SUCCESS,
+	FAIL_WRONG_ARGUMENTS,
+	FAIL_FILE_OPEN,
+	BAD_ALLOCATION
 };
 
 class Play

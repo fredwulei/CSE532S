@@ -12,6 +12,7 @@ public:
 	CodeException(int err_, exception& e) : err(err_), exception(e) {}
 	int errCode() const { return err; }
 private:
+	// store the error code
 	int err;
 };
 

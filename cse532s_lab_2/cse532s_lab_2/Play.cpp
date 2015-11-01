@@ -3,6 +3,7 @@
 void Play::recite(LineIter & iter, int sceneCount)
 {
 	unique_lock<mutex> lock(m);
+	bool largelineCounter = false;
 	cv.wait(lock, [&] {
 		if (emergencyStop) {
 			return true;
@@ -17,17 +18,13 @@ void Play::recite(LineIter & iter, int sceneCount)
 		else {
 			//to be finished
 			cerr << "[ERROR]:  scene already passed or line already passed" << endl;
-			iter++;
 			cv.notify_all();
-			if (iter->first == line_counter){
-				return true;
-			}
-			else{
-				return false;
-			}
+			largelineCounter = true;
+			return true;
 		}
 	});
-	if (!emergencyStop) {
+	if (!emergencyStop && !largelineCounter) {
+		// emergency stop will notify this method to continue, and jump out out loop
 		if (firstLine) {
 			currentCharacter = iter->second.first;
 			cout << iter->second.first << "." << endl;
@@ -60,6 +57,7 @@ void Play::enter(int sceneCount)
 	else {
 		//different condition variable and different mutex
 		unique_lock<mutex> lock(m_enter);
+		// some one is not ont the stage but keep waiting, so not available
 		waiting++;
 		cv_enter.wait(lock, [&] {
 			return (sceneCount == scene_fragment_counter);
@@ -80,6 +78,7 @@ void Play::exit()
 	}
 	else {
 		on_stage--;
+		// if someone exit the stage, he can be cued, so notify
 		cv_cue.notify_all();
 		resetCCandFL();
 		scene_fragment_counter++;
@@ -95,6 +94,7 @@ void Play::exit()
 }
 
 void Play::checkAvailable(int max)
+// check weather there is any available player
 {
 	unique_lock<mutex> lock(m_check);
 	cv_cue.wait(lock, [&] {
@@ -103,6 +103,7 @@ void Play::checkAvailable(int max)
 }
 
 bool Play::checkPlayFinished()
+// ACT cookie check, weather the scripts are all dispatched
 {
 	return finishFlag._Is_ready();
 }
@@ -110,10 +111,12 @@ bool Play::checkPlayFinished()
 void Play::emergentStop()
 {
 	emergencyStop = true;
+	// in case of some threads stuck with recite function, need to notify them all.
 	cv.notify_all();
 }
 
 void Play::resetCCandFL()
+// reset the firstLine and currentCharacter
 {
 	firstLine = true;
 	currentCharacter = string();

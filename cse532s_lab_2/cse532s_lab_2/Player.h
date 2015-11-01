@@ -9,7 +9,6 @@ class Player
 {
 public:
 	Player(Play& p) : play(p), busy(false), isActive(false), sceneCount(0), retrieving(false) {}
-	//Player(Play& p, int i) :index(i) ,play(p), busy(false), isActive(false), sceneCount(0), retrieving(false) {}
 	void enter(int sceneCounter, string name, string script);
 	void activate();
 	void deactive();
@@ -32,10 +31,6 @@ private:
 	LineIter iter;
 	Play& play;
 	thread t;
-
-
-	//int index;
-	//string namea;
 };
 
 #endif

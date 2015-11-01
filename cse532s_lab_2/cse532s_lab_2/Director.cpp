@@ -1,7 +1,8 @@
 #include "Director.h"
 
-Director::Director(const string& scriptName, unsigned int playerCount)
+Director::Director(const string& scriptName, unsigned int playerCount, bool overRide)
 {
+	isOverride = overRide;
 	maximum = 0;
 	ifstream infile(scriptName);
 	if (!infile.is_open()) {
@@ -11,16 +12,23 @@ Director::Director(const string& scriptName, unsigned int playerCount)
 	string currentLine;
 	bool followingPL;
 	int scriptCounter = 1;
+	int lastPartDefCount = 0;
+
+	regex re("^\\[scene\\][\\s]([\\w\\s]*)$");
+	smatch sm;
+	regex re_config("^[\\s]*(.*.txt)[\\s]*$");
+	smatch sm_config;
+	regex re_part("^[\\s]*([\\w]+)[\\s]+(.*.txt)[\\s]*$");
+	smatch sm_part;
+
 	while (getline(infile, currentLine)) {
-		regex re("^\\[scene\\][\\s]([\\w\\s]*)$");
-		smatch sm;
+		// scan for scene titles
 		if (regex_match(currentLine, sm, re)) {
 			titles.push_back(sm[1]);
 			followingPL = false;
 		}
 		else {
-			regex re_config("^[\\s]*(.*.txt)[\\s]*$");
-			smatch sm_config;
+			// scan for scene fragment config files
 			if (regex_match(currentLine, sm_config, re_config)) {
 				scripts[scriptCounter] = script();
 
@@ -32,15 +40,15 @@ Director::Director(const string& scriptName, unsigned int playerCount)
 				}
 				ifstream configFile(sm_config[1]);
 				int partDefinitionLineCount = 0;
+
 				if (!configFile.is_open()) {
 					string temp = sm_config[1];
 					string error = "[ERROR]:  Open file fail: " + temp;
 					throw CodeException(FAIL_FILE_OPEN, error.c_str());
 				}
+				
 				string partDefinitionLine;
-				regex re_part("^[\\s]*([\\w]+)[\\s]+(.*.txt)[\\s]*$");
 				while (getline(configFile, partDefinitionLine)) {
-					smatch sm_part;
 					if (regex_match(partDefinitionLine, sm_part, re_part)) {
 						partDefinitionLineCount++;
 						scripts[scriptCounter][sm_part[1]] = sm_part[2];
@@ -48,13 +56,16 @@ Director::Director(const string& scriptName, unsigned int playerCount)
 				}
 
 				scriptCounter++;
-				maximum = maximum > partDefinitionLineCount ? maximum : partDefinitionLineCount;
+				if (!isOverride) {
+					int consecutiveSum = partDefinitionLineCount + lastPartDefCount;
+					lastPartDefCount = partDefinitionLineCount;
+					maximum = maximum > consecutiveSum ? maximum : consecutiveSum;
+				}
 			}
 		}
 	}
 
 	//finish reading script
-	//#############remeber check whether null or not
 	try {
 		play = playPtr(new Play(titles, finished.get_future()));
 	}
@@ -62,8 +73,14 @@ Director::Director(const string& scriptName, unsigned int playerCount)
 		throw (BAD_ALLOCATION,e);
 	}
 	
-
-	maximum = maximum > (int)playerCount ? maximum : (int)playerCount;
+	// check the override option
+	if (!isOverride) {
+		maximum = maximum > (int)playerCount ? maximum : (int)playerCount;
+	}
+	else {
+		maximum = (int)playerCount;
+	}
+	
 	for (int i = 0; i < maximum; i++) {
 		try {
 			players.push_back(playerPtr(new Player(*play)));
@@ -90,6 +107,7 @@ void Director::cue()
 							players[i]->enter(iter->first, sIt->first, sIt->second);
 						}
 						catch (CodeException& e) {
+							// if there is an exception, need to stop all the currently running threads
 							emergencyStop();
 							throw e;
 						}

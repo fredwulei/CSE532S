@@ -27,6 +27,9 @@ void Player::act()
 			// acting
 			if (!lines.empty()) {
 				if (iter != lines.end()) {
+					if (iter->first == 18 && iter->second.first == "Queen") {
+						int x = 1;
+					}
 					play.recite(iter, sceneCount);
 					iter++;
 				}
@@ -45,12 +48,6 @@ void Player::act()
 
 void Player::enter(int sceneCounter, string name, string script)
 {
-	//namea = name;
-
-
-
-
-
 	play.enter(sceneCounter);
 	busy = true;
 	retrieving = true;
@@ -95,8 +92,6 @@ void Player::deactive()
 void Player::join()
 {
 	if (t.joinable()) {
-		//printf("######### %d try join ### active %d  name %s\n", index,isActive,namea.c_str());
 		t.join();
-		//printf("######### %d joined\n", index);
 	}
 }
