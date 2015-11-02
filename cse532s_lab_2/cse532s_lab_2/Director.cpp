@@ -49,6 +49,7 @@ Director::Director(const string& scriptName, unsigned int playerCount, bool over
 				
 				string partDefinitionLine;
 				while (getline(configFile, partDefinitionLine)) {
+					// scan for part definition files
 					if (regex_match(partDefinitionLine, sm_part, re_part)) {
 						partDefinitionLineCount++;
 						scripts[scriptCounter][sm_part[1]] = sm_part[2];

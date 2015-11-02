@@ -85,7 +85,7 @@ void Play::exit()
 		line_counter = 1;
 		if (iter != sceneRef.end()) {
 			if (!iter->empty()) {
-				cout << *iter << endl;
+				cout << endl << *iter << endl;
 			}
 			iter++;
 		}
@@ -94,7 +94,7 @@ void Play::exit()
 }
 
 void Play::checkAvailable(int max)
-// check weather there is any available player
+// check whether there is any available player
 {
 	unique_lock<mutex> lock(m_check);
 	cv_cue.wait(lock, [&] {
@@ -103,7 +103,7 @@ void Play::checkAvailable(int max)
 }
 
 bool Play::checkPlayFinished()
-// ACT cookie check, weather the scripts are all dispatched
+// ACT cookie check, whether the scripts are all dispatched
 {
 	return finishFlag._Is_ready();
 }

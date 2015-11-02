@@ -27,9 +27,6 @@ void Player::act()
 			// acting
 			if (!lines.empty()) {
 				if (iter != lines.end()) {
-					if (iter->first == 18 && iter->second.first == "Queen") {
-						int x = 1;
-					}
 					play.recite(iter, sceneCount);
 					iter++;
 				}

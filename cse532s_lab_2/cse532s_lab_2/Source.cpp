@@ -13,7 +13,7 @@ int main(int argc, char* argv[]) {
 	unsigned int minimum = 0;
 	if (argc >= 3) {
 		istringstream in(argv[2]);
-		// check for weather the third argument is integer or not
+		// check for whether the third argument is integer or not
 		if (!(in >> minimum && in.eof())) {
 			cerr << "[ERROR]:  <optional: minimum_player> :'" << argv[2] << "' must be a integer!" << endl;
 			return FAIL_WRONG_ARGUMENTS;
