@@ -28,32 +28,35 @@ int main(int argc, char* argv[]){
 		addr.addr_to_string(addrStr, 20);
 	}
 
+	
+
+
+
+	
+
+	//*
 	success = acceptor.accept(stream);
 
 	if (success < 0) {
 		cout << "Cannot accept" << endl;
 		return 1;
 	}
-
+	//*/
 
 
 	char buf[BUFSIZ];
 	int n;
+	char *msg = "You are connected";
+	stream.send_n(msg, strlen(msg));
 
+	stream.close();
 
-	/*
-	string str;
-
-	while (n = stream.recv(&str, 1000)) {
-		cout << str << " ";
-	}
-
-	//*/
 
 	
-	//*
-	while (n = stream.recv(buf, BUFSIZ)) {
-		_write(1, buf, n);
+	/*
+	while (stream.recv(buf, BUFSIZ)) {
+		// _write(1, buf, n);
+		cout << buf << endl;
 	}	
 	//*/
 

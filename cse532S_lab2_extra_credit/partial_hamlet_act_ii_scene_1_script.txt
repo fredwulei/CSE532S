@@ -1,0 +1,3 @@
+[scene] Hamlet Prince of Denmark ACT II Scene I A room in Polonius house by William Shakespeare
+hamlet_act_ii_scene_1a_config.txt
+hamlet_act_ii_scene_1b_config.txt
